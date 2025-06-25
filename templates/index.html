@@ -1,14 +1,46 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jugar - Carrera Matemática</title>
+    <!-- Bootstrap para estilos modernos y modal -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Tu CSS personalizado -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Google Fonts para un look más moderno -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Luckiest+Guy&display=swap" rel="stylesheet">
 
-{% block title %}Jugar - Carrera Matemática{% endblock %}
-
-{% block head_extra %}
+    
 <style>
     /* Estilos específicos del juego irán en style.css, pero puedes poner algunos aquí si prefieres */
 </style>
-{% endblock %}
 
-{% block content %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/" style="font-family: 'Luckiest Guy', cursive;">Carrera Matemática</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Jugar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/stats">Estadísticas</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        
 <div class="row justify-content-center text-center">
     <div class="col-md-8">
         <h1 style="font-family: 'Luckiest Guy', cursive; color: #0d6efd;">¡Carrera Matemática!</h1>
@@ -16,18 +48,26 @@
 
         <!-- Controles de Inicio -->
         <div id="start-controls" class="mb-4">
-            {# Selector de Jugador #}
+            
             <div class="input-group mb-3 mx-auto" style="max-width: 300px;">
                 <label class="input-group-text" for="player-select">Jugador:</label>
                 <select class="form-select" id="player-select">
-                    {# Los data-time aquí ya no son necesarios si usamos un selector de duración de juego separado #}
-                    {% for player_config in players_config %}
-                    <option value="{{ player_config.name }}">{{ player_config.name }}</option>
-                    {% endfor %}
+                    
+                    
+                    <option value="Visitante 1">Visitante 1</option>
+                    
+                    <option value="Visitante 2">Visitante 2</option>
+                    
+                    <option value="Visitante 3">Visitante 3</option>
+                    
+                    <option value="Visitante 4">Visitante 4</option>
+                    
+                    <option value="Visitante 5">Visitante 5</option>
+                    
                 </select>
             </div>
 
-            {# Selector de Duración del Juego #}
+            
             <div class="input-group mb-3 mx-auto" style="max-width: 300px;">
                 <label class="input-group-text" for="game-duration-select">Tiempo de Juego:</label>
                 <select class="form-select" id="game-duration-select">
@@ -38,7 +78,7 @@
                 </select>
             </div>
 
-            {# Selector de Velocidad de Caída (Fall Duration) #}
+            
             <div class="input-group mb-3 mx-auto" style="max-width: 300px;">
                 <label class="input-group-text" for="fall-duration-select">Velocidad Caída:</label>
                 <select class="form-select" id="fall-duration-select">
@@ -62,7 +102,7 @@
             <div id="road"></div>
             <div id="problem-display" class="problem-text">? x ?</div>
             <div id="car">
-                <img src="{{ url_for('static', filename='images/car.png') }}" alt="Carro" width="80">
+                <img src="/static/images/car.png" alt="Carro" width="80">
             </div>
             <div id="numbers-area"></div>
             <div id="game-info">
@@ -79,14 +119,14 @@
 </div>
 
 <!-- Elementos de Audio -->
-<audio id="sound-correct" src="{{ url_for('static', filename='sounds/correct.wav') }}" preload="auto"></audio>
-<audio id="sound-incorrect" src="{{ url_for('static', filename='sounds/incorrect.wav') }}" preload="auto"></audio>
-<audio id="sound-background" src="{{ url_for('static', filename='sounds/background.mp3') }}" loop preload="auto"></audio>
-{# SONIDO DE RESUMEN DEBE ESTAR AQUÍ SI NO ESTÁ EN LAYOUT.HTML #}
-<audio id="sound-summary" src="{{ url_for('static', filename='sounds/summary.mp3') }}" preload="auto"></audio>
+<audio id="sound-correct" src="/static/sounds/correct.wav" preload="auto"></audio>
+<audio id="sound-incorrect" src="/static/sounds/incorrect.wav" preload="auto"></audio>
+<audio id="sound-background" src="/static/sounds/background.mp3" loop preload="auto"></audio>
+
+<audio id="sound-summary" src="/static/sounds/summary.mp3" preload="auto"></audio>
 
 
-{# Modal de detalles #}
+
 <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -100,7 +140,7 @@
         <hr>
         <h5>Operaciones Realizadas:</h5>
         <div id="modal-operations-details" style="max-height: 400px; overflow-y: auto;">
-            {# JS llenará esto #}
+            
         </div>
       </div>
       <div class="modal-footer">
@@ -109,12 +149,16 @@
     </div>
   </div>
 </div>
-{% endblock %} {# Cierre del bloque content #}
 
-{% block scripts_extra %}
-    <script src="{{ url_for('static', filename='js/stats.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='js/game.js') }}" defer></script>
-{% endblock %}
+    </div>
 
-{# ====> ELIMINA TODO EL CONTENIDO DUPLICADO DESDE AQUÍ HACIA ABAJO <==== #}
-{# Ya no debe haber otro {% extends "layout.html" %} ni más bloques #}
+    <!-- Bootstrap JS Bundle (incluye Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- jQuery (opcional, pero puede simplificar algunas cosas) -->
+    <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> -->
+    
+    <script src="/static/js/stats.js" defer></script>
+    <script src="/static/js/game.js" defer></script>
+
+</body>
+</html>
