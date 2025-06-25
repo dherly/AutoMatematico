@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block title %}Jugar - Carrera Matemática{% endblock %}
+
+{% block head_extra %}
+<style>
+    /* Estilos específicos del juego irán en style.css, pero puedes poner algunos aquí si prefieres */
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center text-center">
+    <div class="col-md-8">
+        <h1 style="font-family: 'Luckiest Guy', cursive; color: #0d6efd;">¡Carrera Matemática!</h1>
+        <p class="lead">¡Esquiva los resultados incorrectos y atrapa el correcto!</p>
+
+        <!-- Controles de Inicio -->
+        <div id="start-controls" class="mb-4">
+            {# Selector de Jugador #}
+            <div class="input-group mb-3 mx-auto" style="max-width: 300px;">
+                <label class="input-group-text" for="player-select">Jugador:</label>
+                <select class="form-select" id="player-select">
+                    {# Los data-time aquí ya no son necesarios si usamos un selector de duración de juego separado #}
+                    {% for player_config in players_config %}
+                    <option value="{{ player_config.name }}">{{ player_config.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {# Selector de Duración del Juego #}
+            <div class="input-group mb-3 mx-auto" style="max-width: 300px;">
+                <label class="input-group-text" for="game-duration-select">Tiempo de Juego:</label>
+                <select class="form-select" id="game-duration-select">
+                    <option value="30">30 segundos</option>
+                    <option value="40">40 segundos</option>
+                    <option value="50">50 segundos</option>
+                    <option value="60" selected>60 segundos</option>
+                </select>
+            </div>
+
+            {# Selector de Velocidad de Caída (Fall Duration) #}
+            <div class="input-group mb-3 mx-auto" style="max-width: 300px;">
+                <label class="input-group-text" for="fall-duration-select">Velocidad Caída:</label>
+                <select class="form-select" id="fall-duration-select">
+                    <option value="2">Muy Rápido (2s)</option>
+                    <option value="3" selected>Rápido (3s)</option>
+                    <option value="4">Normal (4s)</option>
+                    <option value="5">Medio (5s)</option>
+                    <option value="6">Lento (6s)</option>
+                    <option value="7">Muy Lento (7s)</option>
+                    <option value="8">Extremo Lento (8s)</option>
+                    <option value="9">Caracol (9s)</option>
+                    <option value="10">Tortuga (10s)</option>
+                </select>
+            </div>
+
+            <button id="start-button" class="btn btn-success btn-lg" style="font-family: 'Poppins', sans-serif;">¡Iniciar Juego!</button>
+        </div>
+
+        <!-- Área del Juego (inicialmente oculta) -->
+        <div id="game-container" style="display: none; position: relative; width: 350px; height: 600px; margin: 20px auto; overflow: hidden; border: 5px solid #6c757d; background-color: #e9ecef; border-radius: 10px;">
+            <div id="road"></div>
+            <div id="problem-display" class="problem-text">? x ?</div>
+            <div id="car">
+                <img src="{{ url_for('static', filename='images/car.png') }}" alt="Carro" width="80">
+            </div>
+            <div id="numbers-area"></div>
+            <div id="game-info">
+                Tiempo: <span id="timer">60</span>s | Puntuación: <span id="score">0</span>
+            </div>
+            <div id="feedback" class="feedback-message"></div>
+        </div>
+
+        <!-- Mensaje de Fin de Juego -->
+        <div id="game-over-message" class="alert alert-info mt-4" style="display: none;">
+            ¡Juego Terminado! Puntuación Final: <span id="final-score">0</span>
+        </div>
+    </div>
+</div>
+
+<!-- Elementos de Audio -->
+<audio id="sound-correct" src="{{ url_for('static', filename='sounds/correct.wav') }}" preload="auto"></audio>
+<audio id="sound-incorrect" src="{{ url_for('static', filename='sounds/incorrect.wav') }}" preload="auto"></audio>
+<audio id="sound-background" src="{{ url_for('static', filename='sounds/background.mp3') }}" loop preload="auto"></audio>
+{# SONIDO DE RESUMEN DEBE ESTAR AQUÍ SI NO ESTÁ EN LAYOUT.HTML #}
+<audio id="sound-summary" src="{{ url_for('static', filename='sounds/summary.mp3') }}" preload="auto"></audio>
+
+
+{# Modal de detalles #}
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailsModalLabel">Detalles del Juego</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Jugador:</strong> <span id="modal-player-name"></span></p>
+        <p><strong>Iniciado:</strong> <span id="modal-start-time"></span></p>
+        <hr>
+        <h5>Operaciones Realizadas:</h5>
+        <div id="modal-operations-details" style="max-height: 400px; overflow-y: auto;">
+            {# JS llenará esto #}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {# Cierre del bloque content #}
+
+{% block scripts_extra %}
+    <script src="{{ url_for('static', filename='js/stats.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/game.js') }}" defer></script>
+{% endblock %}
+
+{# ====> ELIMINA TODO EL CONTENIDO DUPLICADO DESDE AQUÍ HACIA ABAJO <==== #}
+{# Ya no debe haber otro {% extends "layout.html" %} ni más bloques #}
