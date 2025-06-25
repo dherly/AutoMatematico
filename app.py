@@ -61,7 +61,7 @@ def index():
     # return render_template('index.html', players=PLAYER_NAMES)
     return render_template('index.html', players_config=PLAYERS_CONFIG)
 
-@app.route('/')
+@app.route('/stats')
 def stats_page():
     """Renderiza la página de estadísticas."""
     # return render_template('stats.html')
