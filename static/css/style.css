@@ -1,0 +1,213 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa; /* Un fondo suave */
+}
+
+/* --- Estilos del Juego --- */
+#game-container {
+    background-color: #5c7cfa; /* Un color base para el cielo/fondo */
+    overflow: hidden; /* Clave para que la carretera parezca moverse */
+    position: relative; /* Necesario para posicionar elementos internos absolutamente */
+    border: 5px solid #343a40;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+#road {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1200px; /* Doble de la altura del contenedor para animación */
+    background-image: url('../images/road.png'); /* Asegúrate que esta imagen exista */
+    background-repeat: repeat-y;
+    background-size: contain; /* O 'cover' dependiendo de tu imagen */
+    /* Animación para que la carretera baje */
+    animation: moveRoad 5s linear infinite;
+    z-index: 1;
+}
+
+@keyframes moveRoad {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 600px; } /* Mueve la altura del contenedor */
+}
+
+/* Divisores de carril (opcional) */
+.lane-divider {
+    position: absolute;
+    bottom: 0;
+    width: 5px; /* Ancho de la línea */
+    height: 100%;
+    background-color: yellow; /* Color de la línea */
+    background: repeating-linear-gradient(
+        yellow,
+        yellow 20px,
+        transparent 20px,
+        transparent 40px
+    );
+    z-index: 2;
+}
+
+#car {
+    display: block !important;
+    position: absolute;
+    bottom: 20px; /* Posición vertical fija abajo */
+    width: 80px; /* Ancho del carro */
+    height: auto; /* La altura la da la imagen */
+    left: calc(50% - 40px); /* Inicialmente centrado (150px - 40px) */
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4));
+    z-index: 10;
+    transition: left 0.2s ease-in-out; /* Animación suave al cambiar de carril */
+}
+#car img {
+     display: block; /* Evita espacio extra debajo de la imagen */
+     width: 100%;
+     filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4)); /* Sombra bonita */
+}
+
+/* Posiciones de los carriles (basado en ancho de 350px) */
+/* Carril 0 (Izquierda): ~10px margen + (100px ancho carril/2) - (80px ancho carro/2) = 10+50-40 = 20px */
+/* Carril 1 (Centro): 350/2 - 80/2 = 175 - 40 = 135px */
+/* Carril 2 (Derecha): 350 - 10px margen - (100px ancho carril/2) - (80px ancho carro/2) = 340-50-40 = 250px */
+.lane-0 { left: 25px !important; } /* !important para sobreescribir el style inicial */
+.lane-1 { left: calc(50% - 40px) !important; } /* Centro */
+.lane-2 { left: calc(100% - 105px) !important; } /* 350 - 80(car) - 25(margen derecho) */
+
+#problem-display {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 2.5em; /* Tamaño grande */
+    color: white;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 5px 15px;
+    border-radius: 10px;
+    z-index: 15;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+#numbers-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+}
+
+.falling-number {
+    position: absolute;
+    top: 60px; /* Iniciar justo debajo del problema */
+    width: 90px; /* Ancho del contenedor del número */
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4a4e69c9;
+    /* background-color: #dc3545c7; Rojo semi-transparente por defecto */
+    border: 2px solid white;
+    border-radius: 50%; /* Círculo */
+    padding: 10px 0;
+    line-height: 1;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    /* La animación se controlará con JS/CSS */
+    transition: top linear; /* Transición para la caída */
+}
+
+.falling-number.correct-lane-number {
+    background-color: #4a4e69c9;
+    /* background-color: #198754c4; Verde semi-transparente si es el correcto */
+}
+
+/* Posición horizontal de los números en los carriles */
+.falling-number[data-lane="0"] { left: 20px; }
+.falling-number[data-lane="1"] { left: calc(50% - 45px); } /* Centro */
+.falling-number[data-lane="2"] { left: calc(100% - 110px); } /* Derecha */
+
+#game-info {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    z-index: 20;
+}
+
+.feedback-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 3em;
+    padding: 20px;
+    border-radius: 15px;
+    z-index: 25;
+    display: none; /* Oculto por defecto */
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.feedback-message.correct {
+    color: #198754; /* Verde */
+    background-color: rgba(25, 135, 84, 0.8);
+    border: 3px solid #fff;
+    text-shadow: 1px 1px 2px white;
+}
+
+.feedback-message.incorrect {
+    color: #dc3545; /* Rojo */
+    background-color: rgba(220, 53, 69, 0.8);
+    border: 3px solid #fff;
+    text-shadow: 1px 1px 2px white;
+}
+
+.feedback-message.show {
+    display: block;
+    opacity: 1;
+}
+
+/* --- Estilos Generales y Estadísticas --- */
+.navbar-brand, h1, h2, h3 {
+    font-family: 'Luckiest Guy', cursive; /* Fuente llamativa para títulos */
+}
+
+#stats-table-body .correct-row {
+    color: #198754; /* Verde para aciertos */
+    font-weight: bold;
+}
+
+#stats-table-body .incorrect-row {
+    color: #dc3545; /* Rojo para fallos */
+}
+
+/* Mejorar apariencia de botones */
+.btn {
+     font-family: 'Poppins', sans-serif;
+     font-weight: 600;
+     padding: 10px 20px;
+     border-radius: 20px; /* Bordes redondeados */
+     transition: all 0.3s ease;
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.btn-success { background-color: #28a745; border-color: #28a745; }
+.btn-primary { background-color: #0d6efd; border-color: #0d6efd; }
+
+/* Modernizar el select */
+.form-select {
+    border-radius: 20px;
+}
+.input-group-text {
+     border-top-left-radius: 20px;
+     border-bottom-left-radius: 20px;
+}
