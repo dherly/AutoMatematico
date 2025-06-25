@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %}Estadísticas - Carrera Matemática{% endblock %}
+
+{% block content %}
+{# Título Principal #}
+<h1 class="mb-4" style="font-family: 'Luckiest Guy', cursive; color: #0d6efd;">Resumen de Juegos</h1>
+
+{# Tabla Principal para el Resumen de Juegos #}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            {# **CAMBIO:** Cabeceras para el resumen de juegos #}
+            <tr>
+                <th scope="col">Jugador</th>
+                <th scope="col">Fecha y Hora Inicio</th>
+                <th scope="col">Puntuación</th>
+                <th scope="col">Operaciones Totales</th>
+                {# OPCIONAL: Si modificaste /get_stats para incluir duraciones #}
+                {# <th scope="col">T. Juego (s)</th> #}
+                {# <th scope="col">T. Op. (s)</th> #}
+                <th scope="col">Detalles</th> {# Columna para el botón "Ver Juego" #}
+            </tr>
+        </thead>
+        <tbody id="stats-table-body">
+            {# **CAMBIO:** Placeholder único con colspan correcto (5 columnas) #}
+            <tr>
+                <td colspan="5" class="text-center">Cargando resumen de juegos...</td>
+            </tr>
+            {# **CAMBIO:** Eliminar el segundo placeholder incorrecto #}
+        </tbody>
+    </table>
+</div>
+
+{# Modal para mostrar los DETALLES (operaciones) de UN juego específico #}
+{# **CAMBIO:** Añadido modal-lg para un modal más ancho #}
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg"> {# Modal más grande para ver mejor la lista #}
+    <div class="modal-content">
+      <div class="modal-header">
+        {# **CAMBIO:** Título del modal más apropiado #}
+        <h5 class="modal-title" id="detailsModalLabel">Detalles del Juego</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {# **CAMBIO:** Estructura interna del modal COMPLETAMENTE diferente #}
+        {# Información básica del juego seleccionado #}
+        <!-- <p><strong>Jugador:</strong> <span id="modal-player-name"></span></p> {# ID esperado por JS #}
+        <p><strong>Iniciado:</strong> <span id="modal-start-time"></span></p> {# ID esperado por JS #} -->
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <p><strong>Jugador:</strong> <span id="modal-player-name"></span></p>
+                <p><strong>Iniciado:</strong> <span id="modal-start-time"></span></p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Tiempo de Juego:</strong> <span id="modal-game-duration">-</span> segundos</p>
+                <p><strong>Segundos por Operación:</strong> <span id="modal-fall-duration">-</span> segundos</p>
+            </div>
+        </div>
+
+        <hr>
+        <h5>Operaciones Realizadas:</h5>
+        {# Contenedor donde JavaScript insertará la tabla de operaciones #}
+        <div id="modal-operations-details" style="max-height: 400px; overflow-y: auto;">
+            {# JS pondrá "Cargando..." aquí inicialmente, luego la tabla #}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts_extra %}
+{# El script JS no cambia aquí #}
+<script src="{{ url_for('static', filename='js/stats.js') }}"></script>
+{% endblock %}
